@@ -79,25 +79,31 @@ window.addEventListener("dblclick", () => {
   }
 });
 
-// 添加 GUI 操作面板
-const gui = new dat.GUI();
-gui.add(cube3.scale, "x").min(0).max(5).step(0.01).name("X轴缩放");
+let gui: dat.GUI
 
-const colorParams = {
-  color: "#ffff00",
-};
-gui
-  .addColor(colorParams, "color")
-  .name("颜色")
-  .onChange((value) => {
-    // cube 被clone 后， 引用的是统一个 material, 3个cube会同时被修改颜色
-    cube3.material.color.set(value);
-  });
-// visible 是 boolean 类型， gui 会自动给分配一个 check 类型
-gui.add(cube3, "visible").name("是否显示");
+function initGui() {
+  // 添加 GUI 操作面板
+  gui = new dat.GUI();
+  gui.add(cube3.scale, "x").min(0).max(5).step(0.01).name("X轴缩放");
+
+  const colorParams = {
+    color: "#ffff00",
+  };
+  gui
+    .addColor(colorParams, "color")
+    .name("颜色")
+    .onChange((value) => {
+      // cube 被clone 后， 引用的是统一个 material, 3个cube会同时被修改颜色
+      cube3.material.color.set(value);
+    });
+  // visible 是 boolean 类型， gui 会自动给分配一个 check 类型
+  gui.add(cube3, "visible").name("是否显示");
+}
 
 export function render(wrap: HTMLElement) {
   __root__ = wrap;
+
+  initGui()
 
   function _render() {
     controls.update();
@@ -117,4 +123,7 @@ export function render(wrap: HTMLElement) {
   _render();
 }
 
-export function destroy() {}
+export function destroy() {
+  if(gui) gui.destroy()
+  renderer.dispose()
+}

@@ -3,13 +3,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { render } from './main'
+import { onMounted, onUnmounted, ref } from 'vue';
+import { render, destroy } from './main'
 
 const wrap = ref();
 
 onMounted(() => {
   render(wrap.value)
+})
+
+onUnmounted(() => {
+  destroy()
 })
 
 </script>
