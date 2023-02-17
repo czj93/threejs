@@ -7,6 +7,8 @@ import * as dat from "dat.gui";
 // 导入轨道控制器
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
+import pointTextureRes from '@/assets/textures/particles/1.png'
+
 // 创建场景
 const scene = new THREE.Scene();
 // 创建相机
@@ -17,32 +19,101 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 // 设置相机位置
-camera.position.set(0, 0, 10);
+camera.position.set(2.5, 0, 5);
+
 // 场景中添加相机
 scene.add(camera);
 
 // ========================= //
-// ========
+// ======== 用点创建球形 ===== //
 // ========================= //
 
 // 创建球型
-const sphereGeometry = new THREE.SphereGeometry(3, 30, 30)
-// const material = new THREE.MeshBasicMaterial({ color: 0xffff00 })
-// const mesh = new THREE.Mesh(sphereGeometry, material)
-// scene.add(mesh)
+// const sphereGeometry = new THREE.SphereGeometry(3, 30, 30)
 
-// 创建点材质
-const pointMaterial = new THREE.PointsMaterial()
-pointMaterial.size = 0.1
-// 设置颜色
-pointMaterial.color.set(0x00ffff)
-// 设置透视
-pointMaterial.sizeAttenuation = true
-pointMaterial.blending = THREE.AdditiveBlending;
+// // 创建点材质
+// const pointMaterial = new THREE.PointsMaterial()
+// pointMaterial.size = 0.1
+// // 设置颜色
+// pointMaterial.color.set(0x00ffff)
+// // 设置透视
+// pointMaterial.sizeAttenuation = true
+// pointMaterial.blending = THREE.AdditiveBlending;
 
-const points = new THREE.Points(sphereGeometry, pointMaterial)
+// const points = new THREE.Points(sphereGeometry, pointMaterial)
 
-scene.add(points)
+// scene.add(points)
+
+// ========================= //
+// ======== 用点创建球形 ===== //
+// ========================= //
+
+const params = {
+  size: 0.1,
+  count: 1000,
+  branch: 3,
+  color: 0x00ffff,
+  rotate: 0.3
+}
+
+function generateGalaxy() {
+  const geometry = new THREE.BufferGeometry()
+
+  const positions = new Float32Array(params.count * 3)
+
+  for (let i = 0; i <= params.count; i++) {
+    const idx = i * 3
+    const currentBranch = i % params.branch;
+    const currentAngle = currentBranch * ((Math.PI * 2) / params.branch)
+
+    const distance = Math.random() * 5
+
+    const rx = Math.random()
+    const ry = Math.random()
+    const rz = Math.random()
+
+    positions[idx] = distance * Math.cos(currentAngle + distance * params.rotate) + rx
+    positions[idx + 1] = 0 + ry
+    positions[idx + 2] = distance * Math.sin(currentAngle + distance * params.rotate) + rz
+  }
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+
+  const textureLoader = new THREE.TextureLoader()
+
+  const texture = textureLoader.load(pointTextureRes)
+
+  const material = new THREE.PointsMaterial({
+    size: params.size,
+    color: params.color,
+    map: texture,
+    alphaMap: texture,
+    sizeAttenuation: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    // vertexColors: true,
+  })
+
+
+
+  const points = new THREE.Points(geometry, material)
+
+  scene.add(points)
+
+}
+
+generateGalaxy()
+
+
+
+// ========================= //
+// ======== 用点创建星云 ===== //
+// ========================= //
+
+
+
+
 
 
 
@@ -101,7 +172,7 @@ export function render(wrap: HTMLElement) {
 
   function _render() {
     controls.update();
-    points.rotation.y += 0.1
+    // points.rotation.y += 0.1
     renderer.render(scene, camera);
     requestAnimationFrame(_render);
   }
