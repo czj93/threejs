@@ -19,7 +19,7 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 // 设置相机位置
-camera.position.set(2.5, 0, 5);
+camera.position.set(2.5, 5, 5);
 
 // 场景中添加相机
 scene.add(camera);
@@ -50,11 +50,13 @@ scene.add(camera);
 
 const params = {
   size: 0.1,
-  count: 1000,
-  branch: 3,
-  color: 0x00ffff,
+  count: 10000,
+  branch: 6,
+  // color: 0x00ffff,
   rotate: 0.3
 }
+
+let points: THREE.Points
 
 function generateGalaxy() {
   const geometry = new THREE.BufferGeometry()
@@ -66,11 +68,15 @@ function generateGalaxy() {
     const currentBranch = i % params.branch;
     const currentAngle = currentBranch * ((Math.PI * 2) / params.branch)
 
-    const distance = Math.random() * 5
+    const distance = Math.random() * 5 * Math.pow(Math.random(), 3)
 
-    const rx = Math.random()
-    const ry = Math.random()
-    const rz = Math.random()
+    // const rx = Math.random()
+    // const ry = Math.random()
+    // const rz = Math.random()
+
+    const rx = Math.pow(Math.random() * 2 - 1, 3) * (5 - distance) * 0.2
+    const ry = Math.pow(Math.random() * 2 - 1, 3) * (5 - distance) * 0.2
+    const rz = Math.pow(Math.random() * 2 - 1, 3) * (5 - distance) * 0.2
 
     positions[idx] = distance * Math.cos(currentAngle + distance * params.rotate) + rx
     positions[idx + 1] = 0 + ry
@@ -85,7 +91,7 @@ function generateGalaxy() {
 
   const material = new THREE.PointsMaterial({
     size: params.size,
-    color: params.color,
+    // color: params.color,
     map: texture,
     alphaMap: texture,
     sizeAttenuation: true,
@@ -97,7 +103,7 @@ function generateGalaxy() {
 
 
 
-  const points = new THREE.Points(geometry, material)
+  points = new THREE.Points(geometry, material)
 
   scene.add(points)
 
@@ -172,7 +178,7 @@ export function render(wrap: HTMLElement) {
 
   function _render() {
     controls.update();
-    // points.rotation.y += 0.1
+    points.rotation.y += 0.001
     renderer.render(scene, camera);
     requestAnimationFrame(_render);
   }
