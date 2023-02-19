@@ -18,3 +18,10 @@ pnpm dev
   - three
   - dat.gui
   - gsap
+  - cannon
+
+
+# 相关资料
+  - [The Book of Shaders](https://thebookofshaders.com/?lan=ch)
+  - [WebGL 理论基础](https://webglfundamentals.org/webgl/lessons/zh_cn/)
+  - [Shader toy](https://www.shadertoy.com/)
