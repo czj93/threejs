@@ -1,5 +1,6 @@
 // @ts-ignore
 import { resolve } from 'path'
+import glsl from 'vite-plugin-glsl'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -10,7 +11,7 @@ export default defineConfig({
       // @ts-ignore
       "@": resolve(__dirname, 'src'), // 路径别名
     },
-    extensions: ['.js', '.json', '.ts']
+    extensions: ['.js', '.json', '.ts', 'glsl']
   },
-  plugins: [vue()],
+  plugins: [glsl(), vue()],
 })
